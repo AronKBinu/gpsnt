@@ -3,10 +3,11 @@
 # GPSn't 🎯
 
 ## Basic Details
-### Team Name: Error 404 Road Not Found
+### Team Name: ESPRESSO
 
 ### Team Members
-- Team Lead: Aron K Binu - [Your College Name Here]
+- Aron K Binu
+- Noel Mathew Sajan - [MBCCET peermade]
 
 ### Project Description
 GPSn't is the world's most aggressively unhelpful navigation app. Instead of finding the fastest route along roads, it calculates the absolute shortest path between you and your destination—a perfectly straight line that completely ignores buildings, lakes, mountains, and the laws of physics.
