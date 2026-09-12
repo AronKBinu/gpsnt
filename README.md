@@ -49,8 +49,8 @@ For Software:
 ![Screenshot1](assets/screenshot1.png)
 *The dark-mode UI with the glowing red route line ignoring all roads.*
 
-![Screenshot2](assets/screenshot2.png)
+![Screenshot2](assets/screenshot2_new.png)
 *3D mode activated, showing the custom car marker pointing directly towards the destination.*
 
-![Screenshot3](assets/screenshot3.png)
+![Screenshot3](assets/screenshot3_new.png)
 *Terrible navigation advice like "Then prepare for a sudden drop" in the top banner.*
