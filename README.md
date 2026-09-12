@@ -46,11 +46,11 @@ Start_GPSnt.bat
 For Software:
 
 # Screenshots
-![Screenshot1](https://github.com/user-attachments/assets/replace-this-with-your-first-screenshot-link)
+![Screenshot1](assets/screenshot1.png)
 *The dark-mode UI with the glowing red route line ignoring all roads.*
 
-![Screenshot2](https://github.com/user-attachments/assets/replace-this-with-your-second-screenshot-link)
+![Screenshot2](assets/screenshot2.png)
 *3D mode activated, showing the custom car marker pointing directly towards the destination.*
 
-![Screenshot3](https://github.com/user-attachments/assets/replace-this-with-your-third-screenshot-link)
+![Screenshot3](assets/screenshot3.png)
 *Terrible navigation advice like "Then prepare for a sudden drop" in the top banner.*
