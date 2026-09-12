@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GPSn't - The GPS that doesn't believe in roads</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./src/styles/main.css">
+    <link rel="stylesheet" href="./src/styles/theme.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#007aff">
+</head>
+<body class="light-mode">
+    <div id="app">
+        <!-- Landing State Overlay -->
+        <div id="landing-overlay" class="landing-overlay">
+            <div class="landing-card">
+                <h1>GPSn't</h1>
+                <h2>The GPS that doesn't believe in roads.</h2>
+                <p>Enter a destination and we'll show you the shortest possible route. Unfortunately, we don't care whether you can actually travel through it.</p>
+                <div class="landing-actions">
+                    <button id="start-btn" class="primary-btn"><i class="fa-solid fa-location-arrow"></i> Start Navigation</button>
+                    <button id="demo-btn" class="secondary-btn"><i class="fa-solid fa-flask"></i> Demo Mode</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header / Search Area -->
+        <header id="main-header" class="hidden">
+            <div class="header-top">
+                <div class="branding">
+                    <h1>GPSn't</h1>
+                    <span>Shortest route. Worst idea.</span>
+                </div>
+                <div class="header-controls">
+                    <button id="theme-toggle" class="icon-btn" title="Toggle Dark/Light Mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <label for="destination-input" class="sr-only">Where do you want to go?</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="destination-input" placeholder="Search destination (ignore roads)..." autocomplete="off">
+                    <button id="clear-search-btn" class="icon-btn hidden" title="Clear">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <ul id="search-results" class="search-results hidden"></ul>
+                <button id="use-location-btn" class="action-btn">
+                    <i class="fa-solid fa-location-crosshairs"></i> Use My Location
+                </button>
+            </div>
+        </header>
+
+        <!-- Map Container -->
+        <main id="map-container"></main>
+
+        <!-- Notification Toast -->
+        <div id="toast-container" class="toast-container hidden">
+            <div id="toast-message" class="toast-message"></div>
+        </div>
+
+        <!-- Funny Navigation Messages -->
+        <div id="nav-message-container" class="nav-message-container hidden">
+            <div id="nav-message" class="nav-message"></div>
+        </div>
+
+        <!-- Navigation Top Banner (Google Maps style) -->
+        <div id="top-nav-banner" class="top-nav-banner hidden">
+            <div class="primary-instruction">
+                <i class="fa-solid fa-arrow-up nav-arrow"></i>
+                <div class="instruction-text">
+                    <span id="nav-direction-text">Head East</span>
+                </div>
+            </div>
+            <div class="secondary-instruction">
+                <span id="nav-secondary-text">Then prepare to off-road</span>
+            </div>
+        </div>
+
+        <!-- Navigation Bottom Bar (Google Maps style) -->
+        <div id="bottom-nav-bar" class="bottom-nav-bar hidden">
+            <div class="nav-close">
+                <button id="nav-close-btn" class="nav-icon-btn danger" aria-label="End Navigation">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="nav-stats-container">
+                <div id="nav-time" class="nav-time">3 hr 44 min</div>
+                <div class="nav-stats-row">
+                    <span id="nav-dist" class="nav-dist">163 km</span>
+                    <span class="nav-dot">•</span>
+                    <span id="nav-eta" class="nav-eta">2:22 am</span>
+                </div>
+                <div style="font-size: 10px; color: #8e8e93; margin-top: 2px;">(assuming you own a bulldozer)</div>
+            </div>
+            <button id="nav-recentre-btn" class="nav-action-btn"><i class="fa-solid fa-location-arrow"></i></button>
+        </div>
+
+        <!-- Information Panel -->
+        <div id="info-panel" class="info-panel hidden">
+            <div class="info-header">
+                <h3>Destination</h3>
+                <h2 id="info-destination-name">Shopping Mall</h2>
+            </div>
+            
+            <div class="info-stats">
+                <div class="stat">
+                    <span class="stat-label">Distance</span>
+                    <span id="info-distance" class="stat-value">3.7 km</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Direction</span>
+                    <span id="info-direction" class="stat-value">↗ Northeast</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Est. Time</span>
+                    <span id="info-time" class="stat-value">44 min</span>
+                </div>
+            </div>
+
+            <div class="info-details">
+                <div class="detail-row">
+                    <span>Roads Used</span>
+                    <span class="badge badge-zero">0</span>
+                </div>
+                <div class="detail-row">
+                    <span>Shortest Path</span>
+                    <span class="badge badge-yes">YES</span>
+                </div>
+                <div class="detail-row">
+                    <span>Possible Path</span>
+                    <span class="badge badge-no">🤔 Probably not</span>
+                </div>
+            </div>
+
+            <div class="info-actions">
+                <button id="recalculate-btn" class="action-btn outline">
+                    <i class="fa-solid fa-rotate-right"></i> Recalculate
+                </button>
+                <button id="reset-route-btn" class="action-btn danger">
+                    <i class="fa-solid fa-stop"></i> End
+                </button>
+            </div>
+        </div>
+
+        <!-- Route Summary Modal -->
+        <div id="summary-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>ROUTE FOUND</h2>
+                <ul class="summary-list">
+                    <li><strong>Distance:</strong> <span id="summary-distance">4.2 km</span></li>
+                    <li><strong>Direction:</strong> <span id="summary-dir">Straight</span></li>
+                    <li><strong>Roads followed:</strong> 0</li>
+                    <li><strong>Turns:</strong> 0</li>
+                    <li><strong>Common sense:</strong> 0%</li>
+                </ul>
+                <p class="summary-punchline">Congratulations. You have chosen the least practical route.</p>
+                <button id="close-summary-btn" class="primary-btn">Accept My Fate</button>
+            </div>
+        </div>
+
+        <!-- Demo Mode Indicator -->
+        <div id="demo-indicator" class="demo-indicator hidden">
+            DEMO MODE
+        </div>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- App JS Files (Sequential for direct file opening) -->
+    <script src="./src/utils/math.js"></script>
+    <script src="./src/utils/ui.js"></script>
+    <script src="./src/services/GeocodingService.js"></script>
+    <script src="./src/services/GeolocationService.js"></script>
+    <script src="./src/components/MapComponent.js"></script>
+    <script src="./src/main.js"></script>
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
+</body>
+</html>

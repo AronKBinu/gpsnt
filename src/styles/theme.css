@@ -1,0 +1,29 @@
+/* Dark Mode overrides */
+body.dark-mode {
+    --bg-color: #1c1c1e;
+    --card-bg: #2c2c2e;
+    --text-primary: #ffffff;
+    --text-secondary: #aeaeb2;
+    --border-color: #3a3a3c;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.5);
+    --shadow-lg: 0 16px 40px rgba(0,0,0,0.6);
+}
+
+body.dark-mode .leaflet-layer,
+body.dark-mode .leaflet-control-zoom-in,
+body.dark-mode .leaflet-control-zoom-out,
+body.dark-mode .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+body.dark-mode .input-wrapper input {
+    background: #3a3a3c;
+    border-color: #48484a;
+}
+body.dark-mode .search-results {
+    background: #2c2c2e;
+}
+body.dark-mode .search-results li:hover {
+    background: #3a3a3c;
+}
